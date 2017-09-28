@@ -5,80 +5,105 @@ using System.Linq;
 using System.Text;
 using BIF.SWE1.Interfaces;
 
-namespace MyWebServer {
-    class Request : IRequest {
+namespace MyWebServer
+{
+    class Request : IRequest
+    {
 
+        private IDictionary<string, string> headers = new Dictionary<string, string>();
         private Stream network;
-        private IDictionary<string, string> headers;
 
         public Request() : this(null) { }
 
-        public Request(Stream network) {
+        public Request(Stream network)
+        {
             this.network = network;
         }
 
-        public Byte[] ContentBytes {
-            get {
+        public Byte[] ContentBytes
+        {
+            get
+            {
                 throw new NotImplementedException();
             }
         }
 
-        public Int32 ContentLength {
-            get {
+        public Int32 ContentLength
+        {
+            get
+            {
                 throw new NotImplementedException();
             }
         }
 
-        public Stream ContentStream {
-            get {
+        public Stream ContentStream
+        {
+            get
+            {
                 throw new NotImplementedException();
             }
         }
 
-        public String ContentString {
-            get {
+        public String ContentString
+        {
+            get
+            {
                 throw new NotImplementedException();
             }
         }
 
-        public String ContentType {
-            get {
+        public String ContentType
+        {
+            get
+            {
                 throw new NotImplementedException();
             }
         }
 
-        public Int32 HeaderCount {
-            get {
+        public Int32 HeaderCount
+        {
+            get
+            {
                 throw new NotImplementedException();
             }
         }
 
-        public IDictionary<String, String> Headers {
-            get {
+        public IDictionary<String, String> Headers
+        {
+            get
+            {
+                return headers;
+            }
+        }
+
+        public Boolean IsValid
+        {
+            get
+            {
                 throw new NotImplementedException();
             }
         }
 
-        public Boolean IsValid {
-            get {
+        public String Method
+        {
+            get
+            {
                 throw new NotImplementedException();
             }
         }
 
-        public String Method {
-            get {
+        public IUrl Url
+        {
+            get
+            {
                 throw new NotImplementedException();
             }
         }
 
-        public IUrl Url {
-            get {
-                throw new NotImplementedException();
-            }
-        }
-
-        public String UserAgent {
-            get {
+        public String UserAgent
+        {
+            get
+            {
                 throw new NotImplementedException();
             }
         }
