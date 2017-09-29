@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MyWebServer {
-    class Settings {
+namespace MyWebServer
+{
+    class Settings
+    {
 
         public static readonly IDictionary<Int32, string> STATUS_CODES = new Dictionary<Int32, string>();
+        public static readonly IList<string> HTTP_METHODS = new List<string>();
+        public static readonly string USER_AGENT = "User-Agent:";
+        public static readonly string HTTP = "HTTP/";
 
-        static Settings() {
+        static Settings()
+        {
             STATUS_CODES.Add(100, "Continue");
             STATUS_CODES.Add(101, "Switching Protocols");
             STATUS_CODES.Add(102, "Processing");
@@ -39,6 +45,9 @@ namespace MyWebServer {
             STATUS_CODES.Add(502, "Bad Gateway");
             STATUS_CODES.Add(503, "Service Unavailable");
             STATUS_CODES.Add(504, "Gateway Time-out");
+
+            HTTP_METHODS.Add("GET");
+            HTTP_METHODS.Add("POST");
         }
     }
 }
