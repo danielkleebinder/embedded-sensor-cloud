@@ -31,8 +31,7 @@ namespace MyWebServer
         {
             this.raw = raw;
             parameters = new Dictionary<string, string>();
-            if (raw == null)
-            {
+            if (raw == null) {
                 return;
             }
 
@@ -40,23 +39,20 @@ namespace MyWebServer
 
             // Split path and parameters
             string[] splits = raw.Split('?');
-            if (splits.Length > 0)
-            {
+            if (splits.Length > 0) {
                 path = splits[0];
             }
 
             // Parse segments and fragments
             ParseSegments(path);
             string[] fragSplit = path.Split('#');
-            if (fragSplit.Length > 1)
-            {
+            if (fragSplit.Length > 1) {
                 fragment = fragSplit[1];
                 path = fragSplit[0];
             }
 
             // Add parameters to parameter dictionary
-            if (splits.Length > 1)
-            {
+            if (splits.Length > 1) {
                 ParseParameters(splits[1]);
             }
 
@@ -72,15 +68,11 @@ namespace MyWebServer
         {
             string[] parameterList = paramString.Split('&');
             string[] result;
-            foreach (string param in parameterList)
-            {
+            foreach (string param in parameterList) {
                 result = param.Split('=');
-                if (result.Length > 1)
-                {
+                if (result.Length > 1) {
                     parameters.Add(result[0], result[1]);
-                }
-                else if (result.Length > 0)
-                {
+                } else if (result.Length > 0) {
                     parameters.Add(result[0], "");
                 }
             }
@@ -93,15 +85,7 @@ namespace MyWebServer
         /// </summary>
         private void ParseSegments(string path)
         {
-            string[] segSplits = path.Split('/');
-            if (segSplits.Length > 0)
-            {
-                segments = new string[segSplits.Length - 1];
-                for (int i = 0; i < segSplits.Length - 1; i++)
-                {
-                    segments[i] = segSplits[i + 1];
-                }
-            }
+            segments = path?.Split('/').Skip(1).ToArray() ?? new String[] { };
         }
 
         /// <summary>
@@ -112,17 +96,15 @@ namespace MyWebServer
         private void ParseFileName()
         {
             // Parse file name
-            string last = segments[segments.Length - 1];
-            if (last != null && last.Contains('.'))
-            {
+            string last = segments.Last();
+            if (last != null && last.Contains('.')) {
                 fileName = last;
             }
 
             // Parse file extension
             string[] extSplits = fileName.Split('.');
-            if (extSplits.Length >= 1)
-            {
-                extension = "." + extSplits[extSplits.Length - 1];
+            if (extSplits.Length >= 1) {
+                extension = "." + extSplits.Last();
             }
         }
 
@@ -148,18 +130,12 @@ namespace MyWebServer
 
         public string Extension
         {
-            get
-            {
-                return extension;
-            }
+            get { return extension; }
         }
 
         public string FileName
         {
-            get
-            {
-                return fileName;
-            }
+            get { return fileName; }
         }
 
         public string Fragment

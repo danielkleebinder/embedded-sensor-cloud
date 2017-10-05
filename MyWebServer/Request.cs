@@ -9,13 +9,7 @@ namespace MyWebServer
 {
     class Request : IRequest
     {
-
-        private IDictionary<string, string> headers = new Dictionary<string, string>();
         private Stream network;
-
-        private string userAgent;
-        private string method;
-        private IUrl url;
         private bool valid;
 
         public Request() : this(null) { }
@@ -26,6 +20,10 @@ namespace MyWebServer
 
             // Open a stream reader to the given network
             StreamReader reader = new StreamReader(network);
+
+            if (Headers == null) {
+                Headers = new Dictionary<string, string>();
+            }
 
             int lineCount = 0;
             string line;
@@ -42,10 +40,13 @@ namespace MyWebServer
                 }
 
                 // Parse HTTP Protocol Parameters
-                if (lineCount == 0 && line.Contains(Settings.HTTP)) {
+                if (line.Contains(':')) {
+                    string[] headerData = line.Split(':');
+                    string key = headerData[0].Trim().ToLower();
+                    string value = headerData[1].Trim();
+                    Headers.Add(key, value);
+                } else {
                     ParseHTTPHeaderLine(line);
-                } else if (Settings.USER_AGENT.Equals(line, StringComparison.InvariantCultureIgnoreCase)) {
-                    ParseUserAgentParameter(line);
                 }
 
                 lineCount++;
@@ -56,18 +57,9 @@ namespace MyWebServer
             if (lineCount <= 0) {
                 valid = false;
             }
-            if (!Settings.HTTP_METHODS.Contains(method)) {
+            if (!Settings.HTTP_METHODS.Contains(Method)) {
                 valid = false;
             }
-        }
-
-        /// <summary>
-        /// Parses the given line for the user agent parameter ("User-Agent: ").
-        /// </summary>
-        /// <param name="line">Request line</param>
-        private void ParseUserAgentParameter(string line)
-        {
-            userAgent = line.Replace(Settings.USER_AGENT, "").Trim();
         }
 
 
@@ -81,10 +73,10 @@ namespace MyWebServer
             string[] parameters = line.Split(' ');
 
             if (parameters.Length >= 1) {
-                method = parameters[0].ToUpper();
+                Method = parameters[0].ToUpper();
             }
             if (parameters.Length >= 2) {
-                url = new Url(parameters[1]);
+                Url = new Url(parameters[1]);
             }
         }
 
@@ -100,7 +92,10 @@ namespace MyWebServer
         {
             get
             {
-                throw new NotImplementedException();
+                if (!Headers.ContainsKey(Settings.CONTENT_LENGTH)) {
+                    throw new InvalidOperationException("Content length not available in header");
+                }
+                return Int32.Parse(Headers[Settings.CONTENT_LENGTH]);
             }
         }
 
@@ -124,55 +119,46 @@ namespace MyWebServer
         {
             get
             {
-                throw new NotImplementedException();
+                if (!Headers.ContainsKey(Settings.CONTENT_TYPE)) {
+                    throw new InvalidOperationException("Content type not available in header");
+                }
+                return Headers[Settings.CONTENT_TYPE];
             }
         }
 
         public Int32 HeaderCount
         {
-            get
-            {
-                return headers.Count;
-            }
+            get { return Headers.Count; }
         }
 
         public IDictionary<String, String> Headers
         {
-            get
-            {
-                return headers;
-            }
+            get; private set;
         }
 
         public Boolean IsValid
         {
-            get
-            {
-                return valid;
-            }
+            get { return valid; }
         }
 
         public String Method
         {
-            get
-            {
-                return method;
-            }
+            get; private set;
         }
 
         public IUrl Url
         {
-            get
-            {
-                return url;
-            }
+            get; private set;
         }
 
         public String UserAgent
         {
             get
             {
-                return userAgent;
+                if (!Headers.ContainsKey(Settings.USER_AGENT)) {
+                    throw new InvalidOperationException("User agent not available in header");
+                }
+                return Headers[Settings.USER_AGENT];
             }
         }
     }
