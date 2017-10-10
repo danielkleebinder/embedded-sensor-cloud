@@ -60,6 +60,9 @@ namespace MyWebServer
             if (!Settings.HTTP_METHODS.Contains(Method)) {
                 valid = false;
             }
+            if (Url == null) {
+                valid = false;
+            }
         }
 
 

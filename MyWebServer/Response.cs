@@ -9,15 +9,34 @@ namespace MyWebServer
 {
     class Response : IResponse
     {
-
-        private IDictionary<string, string> headers = new Dictionary<string, string>();
         private Int32 statusCode;
+        private Stream contentStream;
+        private Byte[] contentBytes;
+        private String contentString;
+
+        public Response()
+        {
+            Headers = new Dictionary<string, string>();
+            ServerHeader = "BIF-SWE1-Server";
+        }
 
         public Int32 ContentLength
         {
             get
             {
-                throw new NotImplementedException();
+                if (contentBytes != null) {
+                    return contentBytes.Length;
+                }
+
+                if (contentString != null) {
+                    return Encoding.UTF8.GetByteCount(contentString);
+                }
+
+                if (contentStream != null) {
+                    return (Int32) contentStream.Length;
+                }
+
+                return 0;
             }
         }
 
@@ -25,46 +44,37 @@ namespace MyWebServer
         {
             get
             {
-                throw new NotImplementedException();
+                if (!Headers.ContainsKey(Settings.CONTENT_TYPE)) {
+                    return null;
+                }
+                return Headers[Settings.CONTENT_TYPE];
             }
 
             set
             {
-                throw new NotImplementedException();
+                Headers[Settings.CONTENT_TYPE] = value;
             }
         }
 
         public IDictionary<String, String> Headers
         {
-            get
-            {
-                return headers;
-            }
+            get; private set;
         }
 
         public String ServerHeader
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get; set;
         }
 
         public String Status
         {
             get
             {
-                if (Settings.STATUS_CODES.ContainsKey(statusCode))
-                {
+                if (Settings.STATUS_CODES.ContainsKey(statusCode)) {
                     StringBuilder result = new StringBuilder(64);
                     result.Append(statusCode);
                     result.Append(" ");
-                    result.Append(Settings.STATUS_CODES[statusCode].ToUpper());
+                    result.Append(Settings.STATUS_CODES[statusCode]);
                     return result.ToString();
                 }
                 return null;
@@ -75,8 +85,7 @@ namespace MyWebServer
         {
             get
             {
-                if (statusCode <= 0)
-                {
+                if (statusCode <= 0) {
                     throw new InvalidOperationException("Status Code was not set!");
                 }
                 return statusCode;
@@ -90,27 +99,53 @@ namespace MyWebServer
 
         public void AddHeader(String header, String value)
         {
-            headers[header] = value;
+            Headers[header] = value;
         }
 
         public void Send(Stream network)
         {
-            throw new NotImplementedException();
+            if (!String.IsNullOrEmpty(ContentType) && ContentLength <= 0) {
+                throw new InvalidOperationException("Sending a content type without content is not allowed");
+            }
+
+            // Write header and data
+            StreamWriter writer = new StreamWriter(network, Encoding.UTF8);
+            writer.WriteLine("HTTP/1.1 {0}", Status);
+            writer.WriteLine("Server: {0}", ServerHeader);
+            foreach (var item in Headers) {
+                writer.WriteLine("{0}: {1}", item.Key, item.Value);
+            }
+            writer.WriteLine("");
+
+            if (contentStream != null) {
+                contentStream.CopyTo(writer.BaseStream);
+            }
+            if (contentBytes != null) {
+                writer.Write(contentBytes);
+            }
+            if (contentString != null) {
+                writer.Write(contentString);
+            }
+
+            writer.Flush();
         }
 
         public void SetContent(Stream stream)
         {
-            throw new NotImplementedException();
+            this.contentStream = stream;
+            Headers[Settings.CONTENT_LENGTH] = contentStream.Length.ToString();
         }
 
         public void SetContent(Byte[] content)
         {
-            throw new NotImplementedException();
+            this.contentBytes = content;
+            Headers[Settings.CONTENT_LENGTH] = contentBytes.Length.ToString();
         }
 
         public void SetContent(String content)
         {
-            throw new NotImplementedException();
+            this.contentString = content;
+            Headers[Settings.CONTENT_LENGTH] = Encoding.UTF8.GetByteCount(contentString).ToString();
         }
     }
 }
