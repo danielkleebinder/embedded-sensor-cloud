@@ -5,6 +5,8 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using BIF.SWE1.Interfaces;
+
 
 namespace MyWebServer
 {
@@ -18,7 +20,6 @@ namespace MyWebServer
         /// </summary>
         public WebServer()
         {
-            Address = IPAddress.Parse("localhost");
         }
 
         /// <summary>
@@ -27,7 +28,7 @@ namespace MyWebServer
         public void Start()
         {
             running = true;
-            serverSocket = new TcpListener(Address, 8080);
+            serverSocket = new TcpListener(Address, Port);
             serverSocket.Start();
 
             while (running) {
@@ -50,12 +51,21 @@ namespace MyWebServer
         /// </summary>
         public void HandleHTTPRequest(object clientSocket)
         {
+            // Get request from client
             Socket socket = (Socket) clientSocket;
+            using (NetworkStream ns = new NetworkStream(socket)) {
+                IRequest req = new Request(ns);
+            }
         }
 
         /// <summary>
         /// Sets and returns the local server address.
         /// </summary>
-        public IPAddress Address { get; set; }
+        public IPAddress Address { get; set; } = IPAddress.Parse("localhost");
+
+        /// <summary>
+        /// Sets and returns the local server port.
+        /// </summary>
+        public int Port { get; set; } = 8080;
     }
 }
