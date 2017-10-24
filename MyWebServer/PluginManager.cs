@@ -8,6 +8,12 @@ namespace MyWebServer
 {
     class PluginManager : IPluginManager
     {
+
+        public PluginManager()
+        {
+            Add(new TestPlugin.TestPlugin());
+        }
+
         public IEnumerable<IPlugin> Plugins { get; } = new List<IPlugin>();
 
         public void Add(String plugin)
@@ -17,12 +23,12 @@ namespace MyWebServer
 
         public void Add(IPlugin plugin)
         {
-            ( (List<IPlugin>) Plugins ).Add(plugin);
+            ((List<IPlugin>)Plugins).Add(plugin);
         }
 
         public void Clear()
         {
-            ( (List<IPlugin>) Plugins ).Clear();
+            ((List<IPlugin>)Plugins).Clear();
         }
     }
 }

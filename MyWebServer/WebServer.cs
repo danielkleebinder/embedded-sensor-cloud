@@ -28,11 +28,15 @@ namespace MyWebServer
         public void Start()
         {
             running = true;
+
             serverSocket = new TcpListener(Address, Port);
             serverSocket.Start();
 
-            while (running) {
+            while (running)
+            {
+                Console.WriteLine("Waiting for connections...");
                 Socket clientSocket = serverSocket.AcceptSocket();
+                Console.WriteLine("Socket connected");
                 ThreadPool.QueueUserWorkItem(HandleHTTPRequest, clientSocket);
             }
         }
@@ -52,20 +56,28 @@ namespace MyWebServer
         public void HandleHTTPRequest(object clientSocket)
         {
             // Get request from client
-            Socket socket = (Socket) clientSocket;
-            using (NetworkStream ns = new NetworkStream(socket)) {
+            Socket socket = (Socket)clientSocket;
+            using (NetworkStream ns = new NetworkStream(socket))
+            {
                 IRequest req = new Request(ns);
+                Response res = new Response();
+                res.Send(ns);
             }
         }
 
         /// <summary>
         /// Sets and returns the local server address.
         /// </summary>
-        public IPAddress Address { get; set; } = IPAddress.Parse("localhost");
+        public IPAddress Address { get; set; } = IPAddress.Loopback;
 
         /// <summary>
         /// Sets and returns the local server port.
         /// </summary>
         public int Port { get; set; } = 8080;
+
+        /// <summary>
+        /// Sets and returns the plugin manager for this webserver instance.
+        /// </summary>
+        public IPluginManager PluginManager { get; set; } = new PluginManager();
     }
 }

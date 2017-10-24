@@ -21,31 +21,38 @@ namespace MyWebServer
             // Open a stream reader to the given network
             StreamReader reader = new StreamReader(network);
 
-            if (Headers == null) {
+            if (Headers == null)
+            {
                 Headers = new Dictionary<string, string>();
             }
 
             int lineCount = 0;
             string line;
-            while (!reader.EndOfStream) {
+            while (!reader.EndOfStream)
+            {
                 line = reader.ReadLine();
-                if (line == null) {
+                if (line == null)
+                {
                     continue;
                 }
 
                 // Check if line is empty
                 line = line.Trim();
-                if (line == string.Empty) {
+                if (string.IsNullOrEmpty(line))
+                {
                     continue;
                 }
 
                 // Parse HTTP Protocol Parameters
-                if (line.Contains(':')) {
+                if (line.Contains(':'))
+                {
                     string[] headerData = line.Split(':');
                     string key = headerData[0].Trim().ToLower();
                     string value = headerData[1].Trim();
                     Headers.Add(key, value);
-                } else {
+                }
+                else
+                {
                     ParseHTTPHeaderLine(line);
                 }
 
@@ -54,13 +61,16 @@ namespace MyWebServer
 
             // Do validity check
             valid = true;
-            if (lineCount <= 0) {
+            if (lineCount <= 0)
+            {
                 valid = false;
             }
-            if (!Settings.HTTP_METHODS.Contains(Method)) {
+            if (!Settings.HTTP_METHODS.Contains(Method))
+            {
                 valid = false;
             }
-            if (Url == null) {
+            if (Url == null)
+            {
                 valid = false;
             }
         }
@@ -75,10 +85,12 @@ namespace MyWebServer
         {
             string[] parameters = line.Split(' ');
 
-            if (parameters.Length >= 1) {
+            if (parameters.Length >= 1)
+            {
                 Method = parameters[0].ToUpper();
             }
-            if (parameters.Length >= 2) {
+            if (parameters.Length >= 2)
+            {
                 Url = new Url(parameters[1]);
             }
         }
@@ -95,7 +107,8 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(Settings.CONTENT_LENGTH)) {
+                if (!Headers.ContainsKey(Settings.CONTENT_LENGTH))
+                {
                     throw new InvalidOperationException("Content length not available in header");
                 }
                 return Int32.Parse(Headers[Settings.CONTENT_LENGTH]);
@@ -122,7 +135,8 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(Settings.CONTENT_TYPE)) {
+                if (!Headers.ContainsKey(Settings.CONTENT_TYPE))
+                {
                     throw new InvalidOperationException("Content type not available in header");
                 }
                 return Headers[Settings.CONTENT_TYPE];
@@ -158,7 +172,8 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(Settings.USER_AGENT)) {
+                if (!Headers.ContainsKey(Settings.USER_AGENT))
+                {
                     throw new InvalidOperationException("User agent not available in header");
                 }
                 return Headers[Settings.USER_AGENT];

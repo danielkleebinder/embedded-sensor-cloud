@@ -24,16 +24,19 @@ namespace MyWebServer
         {
             get
             {
-                if (contentBytes != null) {
+                if (contentBytes != null)
+                {
                     return contentBytes.Length;
                 }
 
-                if (contentString != null) {
+                if (contentString != null)
+                {
                     return Encoding.UTF8.GetByteCount(contentString);
                 }
 
-                if (contentStream != null) {
-                    return (Int32) contentStream.Length;
+                if (contentStream != null)
+                {
+                    return (Int32)contentStream.Length;
                 }
 
                 return 0;
@@ -44,7 +47,8 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(Settings.CONTENT_TYPE)) {
+                if (!Headers.ContainsKey(Settings.CONTENT_TYPE))
+                {
                     return null;
                 }
                 return Headers[Settings.CONTENT_TYPE];
@@ -70,7 +74,8 @@ namespace MyWebServer
         {
             get
             {
-                if (Settings.STATUS_CODES.ContainsKey(statusCode)) {
+                if (Settings.STATUS_CODES.ContainsKey(statusCode))
+                {
                     StringBuilder result = new StringBuilder(64);
                     result.Append(statusCode);
                     result.Append(" ");
@@ -85,7 +90,8 @@ namespace MyWebServer
         {
             get
             {
-                if (statusCode <= 0) {
+                if (statusCode <= 0)
+                {
                     throw new InvalidOperationException("Status Code was not set!");
                 }
                 return statusCode;
@@ -104,7 +110,8 @@ namespace MyWebServer
 
         public void Send(Stream network)
         {
-            if (!String.IsNullOrEmpty(ContentType) && ContentLength <= 0) {
+            if (!String.IsNullOrEmpty(ContentType) && ContentLength <= 0)
+            {
                 throw new InvalidOperationException("Sending a content type without content is not allowed");
             }
 
@@ -112,18 +119,24 @@ namespace MyWebServer
             StreamWriter writer = new StreamWriter(network, Encoding.UTF8);
             writer.WriteLine("HTTP/1.1 {0}", Status);
             writer.WriteLine("Server: {0}", ServerHeader);
-            foreach (var item in Headers) {
+            foreach (var item in Headers)
+            {
                 writer.WriteLine("{0}: {1}", item.Key, item.Value);
             }
-            writer.WriteLine("");
+            writer.WriteLine();
 
-            if (contentStream != null) {
-                contentStream.CopyTo(writer.BaseStream);
+            if (contentStream != null)
+            {
+                contentStream.Position = 0;
+                contentStream.CopyTo(network);
+                network.Position = 0;
             }
-            if (contentBytes != null) {
+            if (contentBytes != null)
+            {
                 writer.Write(contentBytes);
             }
-            if (contentString != null) {
+            if (contentString != null)
+            {
                 writer.Write(contentString);
             }
 

@@ -50,7 +50,7 @@ namespace TestPlugin
 
         private bool CheckForURLPath(IRequest req)
         {
-            return req.Url.Segments[0] == "test";
+            return req.Url.Segments[0] == "test" || req.Url.RawUrl == "/";
         }
 
         public IResponse Handle(IRequest req)
