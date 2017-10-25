@@ -9,69 +9,57 @@ namespace MyWebServer
 {
     class Request : IRequest
     {
-        private Stream network;
-        private bool valid;
-
         public Request() : this(null) { }
 
         public Request(Stream network)
         {
-            this.network = network;
-
             // Open a stream reader to the given network
-            StreamReader reader = new StreamReader(network);
-
-            if (Headers == null)
-            {
+            StreamReader reader = new StreamReader(network, Encoding.UTF8);
+            if (Headers == null) {
                 Headers = new Dictionary<string, string>();
             }
 
             int lineCount = 0;
             string line;
-            while (!reader.EndOfStream)
-            {
-                line = reader.ReadLine();
-                if (line == null)
-                {
-                    continue;
-                }
 
-                // Check if line is empty
-                line = line.Trim();
-                if (string.IsNullOrEmpty(line))
-                {
-                    continue;
+            // Read Header
+            while (( line = reader.ReadLine() ) != null) {
+                // Check if line is empty which means "end of header"
+                Console.WriteLine(line);
+                if (string.IsNullOrEmpty(line)) {
+                    break;
                 }
 
                 // Parse HTTP Protocol Parameters
-                if (line.Contains(':'))
-                {
+                if (line.Contains(':')) {
                     string[] headerData = line.Split(':');
                     string key = headerData[0].Trim().ToLower();
                     string value = headerData[1].Trim();
                     Headers.Add(key, value);
-                }
-                else
-                {
+                } else {
                     ParseHTTPHeaderLine(line);
                 }
 
                 lineCount++;
             }
 
+            // Read Body Data
+            if (ContentLength > 0) {
+                ContentString = reader.ReadToEnd();
+                ContentBytes = Encoding.UTF8.GetBytes(ContentString);
+                ContentStream = new MemoryStream(ContentBytes);
+            }
+
             // Do validity check
-            valid = true;
-            if (lineCount <= 0)
-            {
-                valid = false;
+            IsValid = true;
+            if (lineCount <= 0) {
+                IsValid = false;
             }
-            if (!Settings.HTTP_METHODS.Contains(Method))
-            {
-                valid = false;
+            if (!Settings.HTTP_METHODS.Contains(Method)) {
+                IsValid = false;
             }
-            if (Url == null)
-            {
-                valid = false;
+            if (Url == null) {
+                IsValid = false;
             }
         }
 
@@ -85,31 +73,25 @@ namespace MyWebServer
         {
             string[] parameters = line.Split(' ');
 
-            if (parameters.Length >= 1)
-            {
+            if (parameters.Length >= 1) {
                 Method = parameters[0].ToUpper();
             }
-            if (parameters.Length >= 2)
-            {
+            if (parameters.Length >= 2) {
                 Url = new Url(parameters[1]);
             }
         }
 
         public Byte[] ContentBytes
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get; private set;
         }
 
         public Int32 ContentLength
         {
             get
             {
-                if (!Headers.ContainsKey(Settings.CONTENT_LENGTH))
-                {
-                    throw new InvalidOperationException("Content length not available in header");
+                if (!Headers.ContainsKey(Settings.CONTENT_LENGTH)) {
+                    return 0;
                 }
                 return Int32.Parse(Headers[Settings.CONTENT_LENGTH]);
             }
@@ -117,26 +99,19 @@ namespace MyWebServer
 
         public Stream ContentStream
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get; private set;
         }
 
         public String ContentString
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get; private set;
         }
 
         public String ContentType
         {
             get
             {
-                if (!Headers.ContainsKey(Settings.CONTENT_TYPE))
-                {
+                if (!Headers.ContainsKey(Settings.CONTENT_TYPE)) {
                     throw new InvalidOperationException("Content type not available in header");
                 }
                 return Headers[Settings.CONTENT_TYPE];
@@ -155,7 +130,7 @@ namespace MyWebServer
 
         public Boolean IsValid
         {
-            get { return valid; }
+            get; private set;
         }
 
         public String Method
@@ -172,8 +147,7 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(Settings.USER_AGENT))
-                {
+                if (!Headers.ContainsKey(Settings.USER_AGENT)) {
                     throw new InvalidOperationException("User agent not available in header");
                 }
                 return Headers[Settings.USER_AGENT];

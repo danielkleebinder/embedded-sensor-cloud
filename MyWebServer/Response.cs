@@ -10,8 +10,6 @@ namespace MyWebServer
     class Response : IResponse
     {
         private Int32 statusCode;
-        private Stream contentStream;
-        private Byte[] contentBytes;
         private String contentString;
 
         public Response()
@@ -24,21 +22,9 @@ namespace MyWebServer
         {
             get
             {
-                if (contentBytes != null)
-                {
-                    return contentBytes.Length;
-                }
-
-                if (contentString != null)
-                {
+                if (contentString != null) {
                     return Encoding.UTF8.GetByteCount(contentString);
                 }
-
-                if (contentStream != null)
-                {
-                    return (Int32)contentStream.Length;
-                }
-
                 return 0;
             }
         }
@@ -47,8 +33,7 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(Settings.CONTENT_TYPE))
-                {
+                if (!Headers.ContainsKey(Settings.CONTENT_TYPE)) {
                     return null;
                 }
                 return Headers[Settings.CONTENT_TYPE];
@@ -74,8 +59,7 @@ namespace MyWebServer
         {
             get
             {
-                if (Settings.STATUS_CODES.ContainsKey(statusCode))
-                {
+                if (Settings.STATUS_CODES.ContainsKey(statusCode)) {
                     StringBuilder result = new StringBuilder(64);
                     result.Append(statusCode);
                     result.Append(" ");
@@ -90,8 +74,7 @@ namespace MyWebServer
         {
             get
             {
-                if (statusCode <= 0)
-                {
+                if (statusCode <= 0) {
                     throw new InvalidOperationException("Status Code was not set!");
                 }
                 return statusCode;
@@ -110,8 +93,7 @@ namespace MyWebServer
 
         public void Send(Stream network)
         {
-            if (!String.IsNullOrEmpty(ContentType) && ContentLength <= 0)
-            {
+            if (!String.IsNullOrEmpty(ContentType) && ContentLength <= 0) {
                 throw new InvalidOperationException("Sending a content type without content is not allowed");
             }
 
@@ -119,40 +101,24 @@ namespace MyWebServer
             StreamWriter writer = new StreamWriter(network, Encoding.UTF8);
             writer.WriteLine("HTTP/1.1 {0}", Status);
             writer.WriteLine("Server: {0}", ServerHeader);
-            foreach (var item in Headers)
-            {
+            foreach (var item in Headers) {
                 writer.WriteLine("{0}: {1}", item.Key, item.Value);
             }
             writer.WriteLine();
-
-            if (contentStream != null)
-            {
-                contentStream.Position = 0;
-                contentStream.CopyTo(network);
-                network.Position = 0;
+            if (contentString != null) {
+                writer.WriteLine(contentString);
             }
-            if (contentBytes != null)
-            {
-                writer.Write(contentBytes);
-            }
-            if (contentString != null)
-            {
-                writer.Write(contentString);
-            }
-
             writer.Flush();
         }
 
         public void SetContent(Stream stream)
         {
-            this.contentStream = stream;
-            Headers[Settings.CONTENT_LENGTH] = contentStream.Length.ToString();
+            SetContent(new StreamReader(stream).ReadToEnd());
         }
 
         public void SetContent(Byte[] content)
         {
-            this.contentBytes = content;
-            Headers[Settings.CONTENT_LENGTH] = contentBytes.Length.ToString();
+            SetContent(Encoding.UTF8.GetString(content));
         }
 
         public void SetContent(String content)

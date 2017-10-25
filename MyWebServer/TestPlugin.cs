@@ -57,7 +57,7 @@ namespace TestPlugin
         {
             Response response = new Response();
             response.StatusCode = 200;
-            response.SetContent("<html><head></head><body><h1>Hello World</h1></body></html>");
+            response.SetContent("<!DOCTYPE html><html><head></head><body><h1>Hello World</h1></body></html>");
             return response;
         }
     }

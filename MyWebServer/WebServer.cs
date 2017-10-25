@@ -32,11 +32,10 @@ namespace MyWebServer
             serverSocket = new TcpListener(Address, Port);
             serverSocket.Start();
 
-            while (running)
-            {
+            while (running) {
                 Console.WriteLine("Waiting for connections...");
                 Socket clientSocket = serverSocket.AcceptSocket();
-                Console.WriteLine("Socket connected");
+                Console.WriteLine("Socket connected: " + clientSocket);
                 ThreadPool.QueueUserWorkItem(HandleHTTPRequest, clientSocket);
             }
         }
@@ -56,12 +55,17 @@ namespace MyWebServer
         public void HandleHTTPRequest(object clientSocket)
         {
             // Get request from client
-            Socket socket = (Socket)clientSocket;
-            using (NetworkStream ns = new NetworkStream(socket))
-            {
+            Socket socket = (Socket) clientSocket;
+            using (NetworkStream ns = new NetworkStream(socket)) {
                 IRequest req = new Request(ns);
-                Response res = new Response();
-                res.Send(ns);
+                if (!req.IsValid) {
+                    return;
+                }
+                foreach (IPlugin plugin in PluginManager.Plugins) {
+                    if (plugin.CanHandle(req) > 0) {
+                        plugin.Handle(req).Send(ns);
+                    }
+                }
             }
         }
 

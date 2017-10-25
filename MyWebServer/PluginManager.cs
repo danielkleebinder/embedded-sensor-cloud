@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using BIF.SWE1.Interfaces;
 
 namespace MyWebServer
@@ -18,7 +19,28 @@ namespace MyWebServer
 
         public void Add(String plugin)
         {
-            throw new NotImplementedException();
+            // Parse plugin string
+            if (string.IsNullOrEmpty(plugin))
+            {
+                throw new ArgumentNullException("Plugin is not allowed to be empty or null");
+            }
+            string[] splits = plugin.Trim().Replace(" ", "").Split(',');
+
+            if (splits == null || splits.Length != 2)
+            {
+                throw new InvalidOperationException("Plugin must contain <class-path>, <name>");
+            }
+
+            // Extract class name and plugin name
+            string className = splits[0];
+            string name = splits[0];
+
+            // Assemble object from class name
+            Type type = Type.GetType(className);
+            IPlugin result = (IPlugin)Activator.CreateInstance(type);
+
+            // Add plugin
+            Add(result);
         }
 
         public void Add(IPlugin plugin)

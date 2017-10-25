@@ -70,6 +70,7 @@
     <Compile Include="Request.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="StaticFilePlugin.cs" />
     <Compile Include="TestPlugin.cs" />
     <Compile Include="Uebungen\UEB1.cs" />
     <Compile Include="Uebungen\UEB2.cs" />
