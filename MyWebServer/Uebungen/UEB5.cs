@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using BIF.SWE1.Interfaces;
 using MyWebServer;
+using System.IO;
 
 namespace Uebungen
 {
@@ -25,17 +26,17 @@ namespace Uebungen
 
         public IPlugin GetStaticFilePlugin()
         {
-            return new StaticFilePlugin();
+            return new MyWebServer.Plugins.StaticFilePlugin();
         }
 
         public string GetStaticFileUrl(string fileName)
         {
-            throw new NotImplementedException();
+            return Path.Combine(AppContext.Current.StaticFileDirectory, fileName);
         }
 
         public void SetStatiFileFolder(string folder)
         {
-            throw new NotImplementedException();
+            AppContext.Current.StaticFileDirectory = folder;
         }
     }
 }

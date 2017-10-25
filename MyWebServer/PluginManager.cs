@@ -12,7 +12,11 @@ namespace MyWebServer
 
         public PluginManager()
         {
-            Add(new TestPlugin.TestPlugin());
+            Add(new Plugins.TestPlugin());
+            Add(new Plugins.StaticFilePlugin());
+            Add(new Plugins.LowerPlugin());
+            Add(new Plugins.TemperaturePlugin());
+            Add(new Plugins.NaviPlugin());
         }
 
         public IEnumerable<IPlugin> Plugins { get; } = new List<IPlugin>();
@@ -24,19 +28,9 @@ namespace MyWebServer
             {
                 throw new ArgumentNullException("Plugin is not allowed to be empty or null");
             }
-            string[] splits = plugin.Trim().Replace(" ", "").Split(',');
-
-            if (splits == null || splits.Length != 2)
-            {
-                throw new InvalidOperationException("Plugin must contain <class-path>, <name>");
-            }
-
-            // Extract class name and plugin name
-            string className = splits[0];
-            string name = splits[0];
 
             // Assemble object from class name
-            Type type = Type.GetType(className);
+            Type type = Type.GetType(plugin);
             IPlugin result = (IPlugin)Activator.CreateInstance(type);
 
             // Add plugin

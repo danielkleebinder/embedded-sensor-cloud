@@ -85,7 +85,7 @@ namespace MyWebServer
         /// </summary>
         private void ParseSegments(string path)
         {
-            segments = path?.Split('/').Skip(1).ToArray() ?? new String[] { };
+            segments = path?.Split(new char[] {'/', '\\'}).Skip(1).ToArray() ?? new String[] { };
         }
 
         /// <summary>

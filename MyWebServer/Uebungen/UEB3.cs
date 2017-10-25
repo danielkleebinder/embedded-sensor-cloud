@@ -25,7 +25,7 @@ namespace Uebungen
 
         public IPlugin GetTestPlugin()
         {
-            return new TestPlugin.TestPlugin();
+            return new MyWebServer.Plugins.TestPlugin();
         }
     }
 }

@@ -16,6 +16,12 @@ namespace MyWebServer
         public static readonly string CONTENT_LENGTH_LC = CONTENT_LENGTH.ToLower();
         public static readonly string CONTENT_LANGUAGE = "Content-Language";
         public static readonly string CONTENT_LANGUAGE_LC = CONTENT_LANGUAGE.ToLower();
+        public static readonly string CONTENT_LANGUAGE_EN = "en";
+        public static readonly string CONTENT_LANGUAGE_DE = "de";
+        public static readonly string CONTENT_ENCODING = "Content-Encoding";
+        public static readonly string CONTENT_ENCODING_LC = CONTENT_ENCODING.ToLower();
+        public static readonly string CONTENT_ENCODING_UTF8 = "utf-8";
+        public static readonly string CONTENT_ENCODING_ASCII = "ascii";
 
         // Content Types
         public static readonly string CONTENT_TYPE = "Content-Type";
@@ -36,5 +42,18 @@ namespace MyWebServer
         public static readonly string CONNECTION_KEEP_ALIVE_LC = CONNECTION_KEEP_ALIVE.ToLower();
         public static readonly string CONNECTION_CLOSED = "Closed";
         public static readonly string CONNECTION_CLOSED_LC = CONNECTION_CLOSED.ToLower();
+
+
+        /// <summary>
+        /// Returns the given content type combined with the given charset.
+        /// </summary>
+        public static string ContentTypeEncoding(string contentType, string encoding)
+        {
+            StringBuilder result = new StringBuilder();
+            result.Append(contentType);
+            result.Append("; charset=");
+            result.Append(encoding);
+            return result.ToString();
+        }
     }
 }

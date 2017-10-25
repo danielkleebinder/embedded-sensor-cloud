@@ -50,12 +50,12 @@ namespace Uebungen
 
         public IPlugin GetToLowerPlugin()
         {
-            throw new NotImplementedException();
+            return new MyWebServer.Plugins.LowerPlugin();
         }
 
         public string GetToLowerUrl()
         {
-            throw new NotImplementedException();
+            return "/";
         }
     }
 }

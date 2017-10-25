@@ -118,7 +118,6 @@ namespace MyWebServer
             if (contentBytes != null)
             {
                 BinaryWriter contentWriter = new BinaryWriter(network);
-                //contentWriter.NewLine = "\r\n";
                 contentWriter.Write(contentBytes);
                 contentWriter.Flush();
             }
