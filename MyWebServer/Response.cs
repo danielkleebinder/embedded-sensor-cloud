@@ -10,7 +10,7 @@ namespace MyWebServer
     class Response : IResponse
     {
         private Int32 statusCode;
-        private String contentString;
+        private Byte[] contentBytes;
 
         public Response()
         {
@@ -22,8 +22,9 @@ namespace MyWebServer
         {
             get
             {
-                if (contentString != null) {
-                    return Encoding.UTF8.GetByteCount(contentString);
+                if (contentBytes != null)
+                {
+                    return contentBytes.Length;
                 }
                 return 0;
             }
@@ -33,15 +34,16 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(Settings.CONTENT_TYPE)) {
+                if (!Headers.ContainsKey(HTTP.CONTENT_TYPE))
+                {
                     return null;
                 }
-                return Headers[Settings.CONTENT_TYPE];
+                return Headers[HTTP.CONTENT_TYPE];
             }
 
             set
             {
-                Headers[Settings.CONTENT_TYPE] = value;
+                Headers[HTTP.CONTENT_TYPE] = value;
             }
         }
 
@@ -59,7 +61,8 @@ namespace MyWebServer
         {
             get
             {
-                if (Settings.STATUS_CODES.ContainsKey(statusCode)) {
+                if (Settings.STATUS_CODES.ContainsKey(statusCode))
+                {
                     StringBuilder result = new StringBuilder(64);
                     result.Append(statusCode);
                     result.Append(" ");
@@ -74,7 +77,8 @@ namespace MyWebServer
         {
             get
             {
-                if (statusCode <= 0) {
+                if (statusCode <= 0)
+                {
                     throw new InvalidOperationException("Status Code was not set!");
                 }
                 return statusCode;
@@ -93,38 +97,51 @@ namespace MyWebServer
 
         public void Send(Stream network)
         {
-            if (!String.IsNullOrEmpty(ContentType) && ContentLength <= 0) {
+            if (!String.IsNullOrEmpty(ContentType) && ContentLength <= 0)
+            {
                 throw new InvalidOperationException("Sending a content type without content is not allowed");
             }
 
-            // Write header and data
-            StreamWriter writer = new StreamWriter(network, Encoding.UTF8);
-            writer.WriteLine("HTTP/1.1 {0}", Status);
-            writer.WriteLine("Server: {0}", ServerHeader);
-            foreach (var item in Headers) {
-                writer.WriteLine("{0}: {1}", item.Key, item.Value);
+            // Write Header Data
+            StreamWriter headerWriter = new StreamWriter(network, Encoding.ASCII);
+            headerWriter.NewLine = "\r\n";
+            headerWriter.WriteLine("HTTP/1.1 {0}", Status);
+            headerWriter.WriteLine("Server: {0}", ServerHeader);
+            foreach (var item in Headers)
+            {
+                headerWriter.WriteLine("{0}: {1}", item.Key, item.Value);
             }
-            writer.WriteLine();
-            if (contentString != null) {
-                writer.WriteLine(contentString);
+            headerWriter.WriteLine();
+            headerWriter.Flush();
+
+            // Write Content Data
+            if (contentBytes != null)
+            {
+                BinaryWriter contentWriter = new BinaryWriter(network);
+                //contentWriter.NewLine = "\r\n";
+                contentWriter.Write(contentBytes);
+                contentWriter.Flush();
             }
-            writer.Flush();
         }
 
         public void SetContent(Stream stream)
         {
-            SetContent(new StreamReader(stream).ReadToEnd());
+            using (var ms = new MemoryStream())
+            {
+                stream.CopyTo(ms);
+                SetContent(ms.ToArray());
+            }
         }
 
         public void SetContent(Byte[] content)
         {
-            SetContent(Encoding.UTF8.GetString(content));
+            this.contentBytes = content;
+            Headers[HTTP.CONTENT_LENGTH_LC] = content.Length.ToString();
         }
 
         public void SetContent(String content)
         {
-            this.contentString = content;
-            Headers[Settings.CONTENT_LENGTH] = Encoding.UTF8.GetByteCount(contentString).ToString();
+            SetContent(Encoding.UTF8.GetBytes(content));
         }
     }
 }

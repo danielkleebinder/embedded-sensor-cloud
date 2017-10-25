@@ -9,8 +9,6 @@ namespace MyWebServer
 {
     class Request : IRequest
     {
-        public Request() : this(null) { }
-
         public Request(Stream network)
         {
             // Open a stream reader to the given network
@@ -90,10 +88,10 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(Settings.CONTENT_LENGTH)) {
+                if (!Headers.ContainsKey(HTTP.CONTENT_LENGTH_LC)) {
                     return 0;
                 }
-                return Int32.Parse(Headers[Settings.CONTENT_LENGTH]);
+                return Int32.Parse(Headers[HTTP.CONTENT_LENGTH_LC]);
             }
         }
 
@@ -111,10 +109,10 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(Settings.CONTENT_TYPE)) {
+                if (!Headers.ContainsKey(HTTP.CONTENT_TYPE_LC)) {
                     throw new InvalidOperationException("Content type not available in header");
                 }
-                return Headers[Settings.CONTENT_TYPE];
+                return Headers[HTTP.CONTENT_TYPE_LC];
             }
         }
 
@@ -147,10 +145,10 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(Settings.USER_AGENT)) {
+                if (!Headers.ContainsKey(HTTP.USER_AGENT_LC)) {
                     throw new InvalidOperationException("User agent not available in header");
                 }
-                return Headers[Settings.USER_AGENT];
+                return Headers[HTTP.USER_AGENT_LC];
             }
         }
     }

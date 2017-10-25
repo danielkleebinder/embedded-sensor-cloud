@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BIF.SWE1.Interfaces;
 using MyWebServer;
 
@@ -12,11 +8,13 @@ namespace TestPlugin
     {
         public Single CanHandle(IRequest req)
         {
-            if (CheckForParameter(req)) {
+            if (CheckForParameter(req))
+            {
                 return 1.0f;
             }
 
-            if (CheckForURLPath(req)) {
+            if (CheckForURLPath(req))
+            {
                 return 0.8f;
             }
 
@@ -26,21 +24,26 @@ namespace TestPlugin
         private bool CheckForParameter(IRequest req)
         {
             // Check if test plugin parameter is available
-            if (!req.Url.Parameter.ContainsKey("test_plugin")) {
+            if (!req.Url.Parameter.ContainsKey("test_plugin"))
+            {
                 return false;
             }
 
             // Read test plugin parameter
             string param = req.Url.Parameter["test_plugin"];
-            if (string.IsNullOrEmpty(param)) {
+            if (string.IsNullOrEmpty(param))
+            {
                 return false;
             }
 
             // Parse test plugin parameter
             bool result = false;
-            try {
+            try
+            {
                 result = bool.Parse(param);
-            } catch (FormatException ex) {
+            }
+            catch (FormatException ex)
+            {
                 Console.WriteLine(ex);
             }
 
@@ -57,7 +60,14 @@ namespace TestPlugin
         {
             Response response = new Response();
             response.StatusCode = 200;
-            response.SetContent("<!DOCTYPE html><html><head></head><body><h1>Hello World</h1></body></html>");
+            response.ContentType = HTTP.CONTENT_TYPE_TEXT_HTML + "; charset=utf-8";
+            response.AddHeader(HTTP.CONNECTION, HTTP.CONNECTION_CLOSED);
+            response.AddHeader(HTTP.CONTENT_LANGUAGE, "en");
+            response.AddHeader("Date", "Mon, 23 May 2017 22:38:34 GMT");
+            response.AddHeader("Expires", "-1");
+            response.AddHeader("Cache-Control", "private, max-age=0");
+            response.AddHeader("Content-Encoding", "utf-8");
+            response.SetContent("<!DOCTYPE html>\r\n\r\n<html><head></head><body><h1>Hello World</h1><p>ßÖÄü123asd</p></body></html>");
             return response;
         }
     }

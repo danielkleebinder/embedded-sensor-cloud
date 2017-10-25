@@ -10,10 +10,6 @@ namespace MyWebServer
 
         public static readonly IDictionary<Int32, string> STATUS_CODES = new Dictionary<Int32, string>();
         public static readonly IList<string> HTTP_METHODS = new List<string>();
-        public static readonly string USER_AGENT = "user-agent";
-        public static readonly string CONTENT_LENGTH = "content-length";
-        public static readonly string CONTENT_TYPE = "content-type";
-        public static readonly string HTTP = "HTTP/";
 
         static Settings()
         {
