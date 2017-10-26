@@ -68,7 +68,7 @@
     <Compile Include="HTTP.cs" />
     <Compile Include="Plugins\LowerPlugin.cs" />
     <Compile Include="PluginManager.cs" />
-    <Compile Include="Plugins\NaviPlugin.cs" />
+    <Compile Include="Plugins\NavigationPlugin.cs" />
     <Compile Include="Plugins\TemperaturePlugin.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -16,7 +16,7 @@ namespace MyWebServer
             Add(new Plugins.StaticFilePlugin());
             Add(new Plugins.LowerPlugin());
             Add(new Plugins.TemperaturePlugin());
-            Add(new Plugins.NaviPlugin());
+            Add(new Plugins.NavigationPlugin());
         }
 
         public IEnumerable<IPlugin> Plugins { get; } = new List<IPlugin>();

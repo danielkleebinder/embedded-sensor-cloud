@@ -6,7 +6,7 @@ using BIF.SWE1.Interfaces;
 
 namespace MyWebServer.Plugins
 {
-    class NaviPlugin : IPlugin
+    class NavigationPlugin : IPlugin
     {
         public Single CanHandle(IRequest req)
         {
@@ -15,6 +15,7 @@ namespace MyWebServer.Plugins
 
         public IResponse Handle(IRequest req)
         {
+
             throw new NotImplementedException();
         }
     }

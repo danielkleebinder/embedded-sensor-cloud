@@ -27,13 +27,14 @@ namespace MyWebServer
             serverSocket.Start();
 
             // Start server main procedure
-            while (running) {
+            while (running)
+            {
                 // Block until clients try to connect
                 Console.WriteLine("Waiting for connections...");
                 Socket clientSocket = serverSocket.AcceptSocket();
 
                 // Start a new thread for the request handling
-                Console.WriteLine("Socket connected: " + clientSocket);
+                Console.WriteLine("Socket connected: " + clientSocket.LocalEndPoint);
                 ThreadPool.QueueUserWorkItem(HandleHTTPRequest, clientSocket);
             }
         }
@@ -53,12 +54,14 @@ namespace MyWebServer
         public void HandleHTTPRequest(object clientSocket)
         {
             // Get request from client
-            Socket socket = (Socket) clientSocket;
-            using (NetworkStream ns = new NetworkStream(socket)) {
+            Socket socket = (Socket)clientSocket;
+            using (NetworkStream ns = new NetworkStream(socket))
+            {
                 IRequest req = new Request(ns);
 
                 // Return "400 Bad Request" if the request is invalid
-                if (!req.IsValid) {
+                if (!req.IsValid)
+                {
                     SendBadRequest(ns);
                     return;
                 }
@@ -66,12 +69,16 @@ namespace MyWebServer
                 // Let the plugins handle all the server response stuff
                 float highest = 0.0f;
                 IPlugin current = null;
-                foreach (IPlugin plugin in PluginManager.Plugins) {
+                foreach (IPlugin plugin in PluginManager.Plugins)
+                {
                     float hc = plugin.CanHandle(req);
-                    if (hc > highest) {
+                    if (hc > highest)
+                    {
+                        highest = hc;
                         current = plugin;
                     }
                 }
+
 
                 // Check if any plugin is able to handle the given request
                 if (current == null)

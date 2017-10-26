@@ -30,12 +30,12 @@ namespace Uebungen
 
         public IPlugin GetNavigationPlugin()
         {
-            throw new NotImplementedException();
+            return new MyWebServer.Plugins.NavigationPlugin();
         }
 
         public IPlugin GetTemperaturePlugin()
         {
-            throw new NotImplementedException();
+            return new MyWebServer.Plugins.TemperaturePlugin();
         }
 
         public string GetTemperatureRestUrl(DateTime from, DateTime until)
