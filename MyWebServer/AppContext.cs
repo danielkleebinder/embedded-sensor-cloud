@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -33,6 +34,14 @@ namespace MyWebServer
             get
             {
                 return System.Environment.CurrentDirectory;
+            }
+        }
+
+        public string PluginDirectory
+        {
+            get
+            {
+                return Path.Combine(WorkingDirectory, "plugins");
             }
         }
     }
