@@ -7,7 +7,7 @@ using System.IO;
 
 namespace MyWebServer
 {
-    class Response : IResponse
+    public class Response : IResponse
     {
         private Int32 statusCode;
         private Byte[] contentBytes;

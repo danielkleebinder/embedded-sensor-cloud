@@ -12,6 +12,8 @@ namespace MyWebServer
         public static readonly string HTTP_PROTOCOL_LC = HTTP_PROTOCOL.ToLower();
         public static readonly string USER_AGENT = "User-Agent";
         public static readonly string USER_AGENT_LC = USER_AGENT.ToLower();
+        public static readonly string LOCATION = "Location";
+        public static readonly string LOCATION_LC = LOCATION.ToLower();
         public static readonly string CONTENT_LENGTH = "Content-Length";
         public static readonly string CONTENT_LENGTH_LC = CONTENT_LENGTH.ToLower();
         public static readonly string CONTENT_LANGUAGE = "Content-Language";
@@ -26,6 +28,7 @@ namespace MyWebServer
         // Content Types
         public static readonly string CONTENT_TYPE = "Content-Type";
         public static readonly string CONTENT_TYPE_LC = CONTENT_TYPE.ToLower();
+        public static readonly string CONTENT_TYPE_TEXT_XML = "text/xml";
         public static readonly string CONTENT_TYPE_TEXT_HTML = "text/html";
         public static readonly string CONTENT_TYPE_TEXT_JAVASCRIPT = "text/javascript";
         public static readonly string CONTENT_TYPE_TEXT_CSS = "text/css";
@@ -42,6 +45,9 @@ namespace MyWebServer
         public static readonly string CONNECTION_KEEP_ALIVE_LC = CONNECTION_KEEP_ALIVE.ToLower();
         public static readonly string CONNECTION_CLOSED = "Closed";
         public static readonly string CONNECTION_CLOSED_LC = CONNECTION_CLOSED.ToLower();
+
+        public static readonly string METHOD_GET = "GET";
+        public static readonly string METHOD_POST = "POST";
 
 
         /// <summary>
