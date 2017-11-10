@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BIF.SWE1.Interfaces;
 
 namespace MyWebServer.Plugins
@@ -25,9 +22,7 @@ namespace MyWebServer.Plugins
             if (req.Url.Parameter.ContainsKey("type")) {
                 string type = req.Url.Parameter["type"].ToLower();
                 restXML = type == "rest";
-                Console.WriteLine(type);
             }
-            Console.WriteLine(restXML);
 
 
             if (restXML) {
@@ -50,11 +45,32 @@ namespace MyWebServer.Plugins
         private IResponse CreateHTML(IRequest req)
         {
             IResponse result = new Response();
-            result.StatusCode = 200;
-            result.ContentType = HTTP.CONTENT_TYPE_TEXT_HTML;
+            result.StatusCode = 400;
+
+            // Check if URL contains all needed information
+            if (!( req.Url.Parameter.ContainsKey("from")
+                && req.Url.Parameter.ContainsKey("until") )) {
+                return result;
+            }
+
+            // Parse date time values from GET parameters
+            DateTime from, until;
+            try {
+                from = DateTime.Parse(req.Url.Parameter["from"]);
+                until = DateTime.Parse(req.Url.Parameter["until"]);
+            } catch (FormatException) {
+                return result;
+            }
+
+            // Check if parsing was successful
+            if (from == null || until == null) {
+                return result;
+            }
 
             // TODO: Use Database Connection Here
-            result.SetContent("<html><h1>Temperature</h1></html>");
+            result.StatusCode = 200;
+            result.ContentType = HTTP.CONTENT_TYPE_TEXT_HTML;
+            result.SetContent("<html><h1>Temperature</h1><h3>" + from + "</h3><h3>" + until + "</h3></html>");
             return result;
         }
     }

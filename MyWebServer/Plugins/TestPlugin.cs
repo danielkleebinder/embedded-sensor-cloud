@@ -1,7 +1,5 @@
 ﻿using System;
 using BIF.SWE1.Interfaces;
-using MyWebServer;
-using System.IO;
 
 namespace MyWebServer.Plugins
 {
@@ -9,13 +7,11 @@ namespace MyWebServer.Plugins
     {
         public Single CanHandle(IRequest req)
         {
-            if (CheckForParameter(req))
-            {
+            if (CheckForParameter(req)) {
                 return 1.0f;
             }
 
-            if (CheckForURLPath(req))
-            {
+            if (CheckForURLPath(req)) {
                 return 0.8f;
             }
 
@@ -25,26 +21,21 @@ namespace MyWebServer.Plugins
         private bool CheckForParameter(IRequest req)
         {
             // Check if test plugin parameter is available
-            if (!req.Url.Parameter.ContainsKey("test_plugin"))
-            {
+            if (!req.Url.Parameter.ContainsKey("test_plugin")) {
                 return false;
             }
 
             // Read test plugin parameter
             string param = req.Url.Parameter["test_plugin"];
-            if (string.IsNullOrEmpty(param))
-            {
+            if (string.IsNullOrEmpty(param)) {
                 return false;
             }
 
             // Parse test plugin parameter
             bool result = false;
-            try
-            {
+            try {
                 result = bool.Parse(param);
-            }
-            catch (FormatException ex)
-            {
+            } catch (FormatException ex) {
                 Console.WriteLine(ex);
             }
 
@@ -55,7 +46,6 @@ namespace MyWebServer.Plugins
         private bool CheckForURLPath(IRequest req)
         {
             return req.Url.Segments[0] == "test" || req.Url.RawUrl == "/";
-            // return true;
         }
 
         public IResponse Handle(IRequest req)

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
 using BIF.SWE1.Interfaces;
 using System.IO;
@@ -25,13 +23,30 @@ namespace MyWebServer
 
         private void LoadDynamicPlugins()
         {
-            Assembly pluginDLL = Assembly.LoadFrom(Path.Combine(AppContext.Current.PluginDirectory, "GooglePlugin.dll"));
-            Type[] pluginTypes = pluginDLL.GetTypes();
-            foreach (Type pluginType in pluginTypes) {
-                if (pluginType.GetInterface("BIF.SWE1.Interfaces.IPlugin") == null) {
+            // Check if the plugin directory does even exist
+            string pluginPath = AppContext.Current.PluginDirectory;
+            if (!Directory.Exists(pluginPath)) {
+                Directory.CreateDirectory(pluginPath);
+                return;
+            }
+
+            // Scan the plugin directory for all available plugins and try to load them
+            foreach (string file in Directory.GetFiles(pluginPath)) {
+                if (!file.EndsWith(".dll")) {
                     continue;
                 }
-                Add(Activator.CreateInstance(pluginType) as IPlugin);
+
+                // Load DLL assembly and scan for the "IPlugin" interface
+                Assembly pluginDLL = Assembly.LoadFrom(Path.Combine(AppContext.Current.PluginDirectory, file));
+                Type[] pluginTypes = pluginDLL.GetTypes();
+                foreach (Type pluginType in pluginTypes) {
+                    if (pluginType.GetInterface("BIF.SWE1.Interfaces.IPlugin") == null) {
+                        continue;
+                    }
+
+                    // Create an instance of the plugin and add it to the plugin manager
+                    Add(Activator.CreateInstance(pluginType) as IPlugin);
+                }
             }
         }
 

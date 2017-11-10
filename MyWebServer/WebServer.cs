@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
@@ -54,7 +51,7 @@ namespace MyWebServer
         public void HandleHTTPRequest(object clientSocket)
         {
             // Get request from client
-            Socket socket = (Socket)clientSocket;
+            Socket socket = (Socket) clientSocket;
             using (NetworkStream ns = new NetworkStream(socket))
             {
                 IRequest req = new Request(ns);

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BIF.SWE1.Interfaces;
 
 namespace MyWebServer.Plugins
@@ -34,7 +31,7 @@ namespace MyWebServer.Plugins
             string street = null;
             if (req.Url.Parameter.ContainsKey("street")) {
                 street = req.Url.Parameter["street"];
-            } else if (req.ContentString.Contains("street=")) {
+            } else if (req.ContentString != null && req.ContentString.Contains("street=")) {
                 string[] splits = req.ContentString.Split('=');
                 if (splits.Length > 1) {
                     street = splits[1];

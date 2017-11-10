@@ -1,7 +1,6 @@
 ﻿using BIF.SWE1.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 
@@ -22,8 +21,7 @@ namespace MyWebServer
         {
             get
             {
-                if (contentBytes != null)
-                {
+                if (contentBytes != null) {
                     return contentBytes.Length;
                 }
                 return 0;
@@ -34,8 +32,7 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(HTTP.CONTENT_TYPE))
-                {
+                if (!Headers.ContainsKey(HTTP.CONTENT_TYPE)) {
                     return null;
                 }
                 return Headers[HTTP.CONTENT_TYPE];
@@ -61,8 +58,7 @@ namespace MyWebServer
         {
             get
             {
-                if (Settings.STATUS_CODES.ContainsKey(statusCode))
-                {
+                if (Settings.STATUS_CODES.ContainsKey(statusCode)) {
                     StringBuilder result = new StringBuilder(64);
                     result.Append(statusCode);
                     result.Append(" ");
@@ -77,8 +73,7 @@ namespace MyWebServer
         {
             get
             {
-                if (statusCode <= 0)
-                {
+                if (statusCode <= 0) {
                     throw new InvalidOperationException("Status Code was not set!");
                 }
                 return statusCode;
@@ -97,8 +92,7 @@ namespace MyWebServer
 
         public void Send(Stream network)
         {
-            if (!String.IsNullOrEmpty(ContentType) && ContentLength <= 0)
-            {
+            if (!String.IsNullOrEmpty(ContentType) && ContentLength <= 0) {
                 throw new InvalidOperationException("Sending a content type without content is not allowed");
             }
 
@@ -107,16 +101,14 @@ namespace MyWebServer
             headerWriter.NewLine = "\r\n";
             headerWriter.WriteLine("HTTP/1.1 {0}", Status);
             headerWriter.WriteLine("Server: {0}", ServerHeader);
-            foreach (var item in Headers)
-            {
+            foreach (var item in Headers) {
                 headerWriter.WriteLine("{0}: {1}", item.Key, item.Value);
             }
             headerWriter.WriteLine();
             headerWriter.Flush();
 
             // Write Content Data
-            if (contentBytes != null)
-            {
+            if (contentBytes != null) {
                 BinaryWriter contentWriter = new BinaryWriter(network);
                 contentWriter.Write(contentBytes);
                 contentWriter.Flush();
@@ -125,8 +117,7 @@ namespace MyWebServer
 
         public void SetContent(Stream stream)
         {
-            using (var ms = new MemoryStream())
-            {
+            using (var ms = new MemoryStream()) {
                 stream.CopyTo(ms);
                 SetContent(ms.ToArray());
             }
