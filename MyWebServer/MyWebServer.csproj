@@ -65,7 +65,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppContext.cs" />
+    <Compile Include="Data\DatabaseAccess.cs" />
+    <Compile Include="Data\SQLServerDatabaseAccess.cs" />
+    <Compile Include="Data\Temperature.cs" />
+    <Compile Include="Data\VirtualDatabaseAccess.cs" />
     <Compile Include="HTTP.cs" />
+    <Compile Include="Plugins\TestPlugin.cs" />
     <Compile Include="Plugins\LowerPlugin.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="Plugins\NavigationPlugin.cs" />
@@ -76,7 +81,7 @@
     <Compile Include="Response.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Plugins\StaticFilePlugin.cs" />
-    <Compile Include="Plugins\TestPlugin.cs" />
+    <Compile Include="Plugins\IndexPlugin.cs" />
     <Compile Include="Uebungen\UEB1.cs" />
     <Compile Include="Uebungen\UEB2.cs" />
     <Compile Include="Uebungen\UEB3.cs" />

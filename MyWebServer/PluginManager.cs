@@ -12,6 +12,7 @@ namespace MyWebServer
         public PluginManager()
         {
             Add(new Plugins.TestPlugin());
+            Add(new Plugins.IndexPlugin());
             Add(new Plugins.StaticFilePlugin());
             Add(new Plugins.LowerPlugin());
             Add(new Plugins.TemperaturePlugin());

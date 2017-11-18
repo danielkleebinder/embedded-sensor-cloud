@@ -48,7 +48,7 @@ namespace MyWebServer
         /// <summary>
         /// Handles the HTTP request.
         /// </summary>
-        public void HandleHTTPRequest(object clientSocket)
+        private void HandleHTTPRequest(object clientSocket)
         {
             // Get request from client
             Socket socket = (Socket) clientSocket;
