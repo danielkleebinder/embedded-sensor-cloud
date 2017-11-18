@@ -12,7 +12,6 @@ namespace MyWebServer
         public PluginManager()
         {
             Add(new Plugins.TestPlugin());
-            Add(new Plugins.IndexPlugin());
             Add(new Plugins.StaticFilePlugin());
             Add(new Plugins.LowerPlugin());
             Add(new Plugins.TemperaturePlugin());
@@ -26,22 +25,27 @@ namespace MyWebServer
         {
             // Check if the plugin directory does even exist
             string pluginPath = AppContext.Current.PluginDirectory;
-            if (!Directory.Exists(pluginPath)) {
+            if (!Directory.Exists(pluginPath))
+            {
                 Directory.CreateDirectory(pluginPath);
                 return;
             }
 
             // Scan the plugin directory for all available plugins and try to load them
-            foreach (string file in Directory.GetFiles(pluginPath)) {
-                if (!file.EndsWith(".dll")) {
+            foreach (string file in Directory.GetFiles(pluginPath))
+            {
+                if (!file.EndsWith(".dll"))
+                {
                     continue;
                 }
 
                 // Load DLL assembly and scan for the "IPlugin" interface
                 Assembly pluginDLL = Assembly.LoadFrom(Path.Combine(AppContext.Current.PluginDirectory, file));
                 Type[] pluginTypes = pluginDLL.GetTypes();
-                foreach (Type pluginType in pluginTypes) {
-                    if (pluginType.GetInterface("BIF.SWE1.Interfaces.IPlugin") == null) {
+                foreach (Type pluginType in pluginTypes)
+                {
+                    if (pluginType.GetInterface("BIF.SWE1.Interfaces.IPlugin") == null)
+                    {
                         continue;
                     }
 
@@ -56,7 +60,8 @@ namespace MyWebServer
         public void Add(String plugin)
         {
             // Parse plugin string
-            if (string.IsNullOrEmpty(plugin)) {
+            if (string.IsNullOrEmpty(plugin))
+            {
                 throw new ArgumentNullException("Plugin is not allowed to be empty or null");
             }
 
@@ -70,12 +75,12 @@ namespace MyWebServer
 
         public void Add(IPlugin plugin)
         {
-            ( (List<IPlugin>) Plugins ).Add(plugin);
+            ((List<IPlugin>) Plugins).Add(plugin);
         }
 
         public void Clear()
         {
-            ( (List<IPlugin>) Plugins ).Clear();
+            ((List<IPlugin>) Plugins).Clear();
         }
     }
 }

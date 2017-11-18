@@ -60,24 +60,48 @@ namespace MyWebServer.Plugins
             {
                 // Read XML using SAX and build the result
                 StringBuilder content = new StringBuilder();
-                content.AppendLine("Orte gefunden");
-                /*using (XmlReader reader = XmlReader.Create("./streetmap/austria.osm.pbf"))
+                content.Append("Orte gefunden,");
+                bool streetFound = false;
+                if (File.Exists("./streetmap/map.osm.xml"))
                 {
-                    reader.MoveToContent();
-                    while (reader.Read())
+                    using (XmlReader reader = XmlReader.Create("./streetmap/map.osm.xml"))
                     {
-                        if (reader.NodeType != XmlNodeType.Element)
+                        reader.MoveToContent();
+                        while (reader.Read())
                         {
-                            continue;
-                        }
-                        if (reader.Name == street)
-                        {
-                            content.AppendLine();
+                            // Check if the node is an element
+                            if (reader.NodeType != XmlNodeType.Element)
+                            {
+                                continue;
+                            }
+
+                            // Check if current element is a "tag" element
+                            if (reader.Name == null || reader.Name != "tag")
+                            {
+                                continue;
+                            }
+
+
+                            string key = reader.GetAttribute("k");
+                            if (!streetFound && key != null && key == "name")
+                            {
+                                if (reader.GetAttribute("v") == street)
+                                {
+                                    streetFound = true;
+                                }
+                            }
+                            else if (streetFound && key != null && key == "addr:city")
+                            {
+                                content.Append(reader.GetAttribute("v"));
+                                content.Append(',');
+                                streetFound = false;
+                            }
                         }
                     }
-                }*/
+                }
 
                 // Finish Response
+                content.Length--;
                 result.SetContent(content.ToString());
             }
 

@@ -81,7 +81,6 @@
     <Compile Include="Response.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Plugins\StaticFilePlugin.cs" />
-    <Compile Include="Plugins\IndexPlugin.cs" />
     <Compile Include="Uebungen\UEB1.cs" />
     <Compile Include="Uebungen\UEB2.cs" />
     <Compile Include="Uebungen\UEB3.cs" />

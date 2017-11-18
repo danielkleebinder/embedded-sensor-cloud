@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BIF.SWE1.Interfaces;
 using System.IO;
 
@@ -15,30 +12,65 @@ namespace MyWebServer.Plugins
             {
                 return 0.0f;
             }
-            if (req.Url.RawUrl.Contains("static-files"))
-            {
-                return 1.0f;
-            }
-            return 0.0f;
+            return 0.5f;
         }
 
         public IResponse Handle(IRequest req)
         {
             Response response = new Response();
-            response.ContentType = HTTP.ContentTypeEncoding(HTTP.CONTENT_TYPE_TEXT_PLAIN, "UTF-8");
             response.AddHeader(HTTP.CONNECTION, HTTP.CONNECTION_CLOSED);
             response.AddHeader(HTTP.CONTENT_LANGUAGE, HTTP.CONTENT_LANGUAGE_EN);
+            response.AddHeader(HTTP.CONTENT_ENCODING, HTTP.CONTENT_ENCODING_UTF8);
 
-            // Return simple 404 Not Found code if the file does not exist
-            if (!File.Exists(req.Url.RawUrl))
+            // Send 404 Not Found response
+            string file = null;
+            string reqUrl = req.Url.RawUrl.Replace("/", @"\");
+            string dir = AppContext.Current.WorkingDirectory + reqUrl;
+
+            // Check if the request files exists on the OS and directly return it
+            if (File.Exists(reqUrl))
+            {
+                return CreateResponse(response, reqUrl);
+            }
+
+            // Check if the given directory exists
+            if (Directory.Exists(dir))
+            {
+                if (!dir.EndsWith(@"\"))
+                {
+                    dir += @"\";
+                }
+            }
+
+            // Check for all available index files
+            foreach (string doc in HTTP.DEFAULT_DOCUMENTS)
+            {
+                string osFile = dir + doc.Replace("/", @"\");
+                if (File.Exists(osFile))
+                {
+                    file = osFile;
+                    break;
+                }
+            }
+
+            // Return 404 NOT FOUND if the file does not exist
+            if (file == null)
             {
                 response.StatusCode = 404;
                 return response;
             }
+            return CreateResponse(response, file);
+        }
 
-            // Create proper response
+        private IResponse CreateResponse(IResponse response, string file)
+        {
+            // Get file extension
+            string ext = Path.GetExtension(file);
+
+            // Send response file
             response.StatusCode = 200;
-            response.SetContent(File.ReadAllBytes(req.Url.RawUrl));
+            response.ContentType = HTTP.ContentTypeEncoding(HTTP.MimeTypeFromExtension(ext), "UTF-8");
+            response.SetContent(File.ReadAllBytes(file));
             return response;
         }
     }

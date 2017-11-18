@@ -14,7 +14,7 @@ namespace MyWebServer.Plugins
 
         public TemperaturePlugin()
         {
-            // access = new SQLServerDatabaseAccess();
+            //access = new SQLServerDatabaseAccess();
             access = new VirtualDatabaseAccess();
             access.Initialize();
 
@@ -119,15 +119,15 @@ namespace MyWebServer.Plugins
 
                 // Temperature element in Kelvin
                 XmlElement kelvin = (XmlElement) entry.AppendChild(document.CreateElement("Kelvin"));
-                kelvin.AppendChild(document.CreateTextNode(current.Kelvin.ToString()));
+                kelvin.AppendChild(document.CreateTextNode(current.Kelvin.ToString().Replace(',', '.')));
 
                 // Temperature element in Celsius
                 XmlElement celsius = (XmlElement) entry.AppendChild(document.CreateElement("Celsius"));
-                celsius.AppendChild(document.CreateTextNode(current.Celsius.ToString()));
+                celsius.AppendChild(document.CreateTextNode(current.Celsius.ToString().Replace(',', '.')));
 
                 // Temperature element in Fahrenheit
                 XmlElement fahrenheit = (XmlElement) entry.AppendChild(document.CreateElement("Fahrenheit"));
-                fahrenheit.AppendChild(document.CreateTextNode(current.Fahrenheit.ToString()));
+                fahrenheit.AppendChild(document.CreateTextNode(current.Fahrenheit.ToString().Replace(',', '.')));
             }
 
             // Finish Response

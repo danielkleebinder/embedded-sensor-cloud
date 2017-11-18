@@ -13,7 +13,8 @@ namespace MyWebServer
         {
             // Open a stream reader to the given network
             StreamReader reader = new StreamReader(network, Encoding.UTF8);
-            if (Headers == null) {
+            if (Headers == null)
+            {
                 Headers = new Dictionary<string, string>();
             }
 
@@ -21,20 +22,25 @@ namespace MyWebServer
             string line;
 
             // Read Header
-            while (( line = reader.ReadLine() ) != null) {
+            while ((line = reader.ReadLine()) != null)
+            {
                 // Check if line is empty which means "end of header"
                 Console.WriteLine(line);
-                if (string.IsNullOrEmpty(line)) {
+                if (string.IsNullOrEmpty(line))
+                {
                     break;
                 }
 
                 // Parse HTTP Protocol Parameters
-                if (line.Contains(':') && lineCount > 0) {
+                if (line.Contains(':') && lineCount > 0)
+                {
                     string[] headerData = line.Split(':');
                     string key = headerData[0].Trim().ToLower();
                     string value = headerData[1].Trim();
                     Headers.Add(key, value);
-                } else {
+                }
+                else
+                {
                     ParseHTTPHeaderLine(line);
                 }
 
@@ -42,21 +48,27 @@ namespace MyWebServer
             }
 
             // Read Body Data
-            if (ContentLength > 0) {
-                ContentString = reader.ReadToEnd();
+            if (ContentLength > 0)
+            {
+                char[] result = new char[ContentLength];
+                reader.Read(result, 0, ContentLength);
+                ContentString = new string(result);
                 ContentBytes = Encoding.UTF8.GetBytes(ContentString);
                 ContentStream = new MemoryStream(ContentBytes);
             }
 
             // Do validity check
             IsValid = true;
-            if (lineCount <= 0) {
+            if (lineCount <= 0)
+            {
                 IsValid = false;
             }
-            if (!Settings.HTTP_METHODS.Contains(Method)) {
+            if (!Settings.HTTP_METHODS.Contains(Method))
+            {
                 IsValid = false;
             }
-            if (Url == null) {
+            if (Url == null)
+            {
                 IsValid = false;
             }
         }
@@ -71,10 +83,12 @@ namespace MyWebServer
         {
             string[] parameters = line.Split(' ');
 
-            if (parameters.Length >= 1) {
+            if (parameters.Length >= 1)
+            {
                 Method = parameters[0].ToUpper();
             }
-            if (parameters.Length >= 2) {
+            if (parameters.Length >= 2)
+            {
                 // URL is allowed to include whitespaces
                 string url = line.Remove(0, line.IndexOf(' '));
                 url = url.Remove(url.LastIndexOf(' ')).Trim();
@@ -91,7 +105,8 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(HTTP.CONTENT_LENGTH_LC)) {
+                if (!Headers.ContainsKey(HTTP.CONTENT_LENGTH_LC))
+                {
                     return 0;
                 }
                 return Int32.Parse(Headers[HTTP.CONTENT_LENGTH_LC]);
@@ -112,7 +127,8 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(HTTP.CONTENT_TYPE_LC)) {
+                if (!Headers.ContainsKey(HTTP.CONTENT_TYPE_LC))
+                {
                     throw new InvalidOperationException("Content type not available in header");
                 }
                 return Headers[HTTP.CONTENT_TYPE_LC];
@@ -148,7 +164,8 @@ namespace MyWebServer
         {
             get
             {
-                if (!Headers.ContainsKey(HTTP.USER_AGENT_LC)) {
+                if (!Headers.ContainsKey(HTTP.USER_AGENT_LC))
+                {
                     throw new InvalidOperationException("User agent not available in header");
                 }
                 return Headers[HTTP.USER_AGENT_LC];
