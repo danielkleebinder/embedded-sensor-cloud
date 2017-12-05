@@ -4,8 +4,19 @@ using System.IO;
 
 namespace MyWebServer.Plugins
 {
-    class StaticFilePlugin : IPlugin
+    /// <summary>
+    /// The static file plugin is used to send web page files like CSS, JS and images
+    /// to the clients. This plugin is mainly responsible for creating HTTP responses
+    /// and to build web pages.
+    /// </summary>
+    public class StaticFilePlugin : IPlugin
     {
+        /// <summary>
+        /// Checks if the given request can be handled by this plugin. If the URL is valid, no
+        /// problems should occur.
+        /// </summary>
+        /// <param name="req">Request.</param>
+        /// <returns>Float value between 0.0 and 1.0.</returns>
         public Single CanHandle(IRequest req)
         {
             if (req == null || req.Url == null || req.Url.RawUrl == null)
@@ -15,6 +26,11 @@ namespace MyWebServer.Plugins
             return 0.5f;
         }
 
+        /// <summary>
+        /// Handles the request by sending requested files to the client.
+        /// </summary>
+        /// <param name="req">Request.</param>
+        /// <returns>Response.</returns>
         public IResponse Handle(IRequest req)
         {
             Response response = new Response();
@@ -62,6 +78,12 @@ namespace MyWebServer.Plugins
             return CreateResponse(response, file);
         }
 
+        /// <summary>
+        /// Initializes the given response for the given file.
+        /// </summary>
+        /// <param name="response">Response.</param>
+        /// <param name="file">File to be sent.</param>
+        /// <returns>Setup response with file data and status codes.</returns>
         private IResponse CreateResponse(IResponse response, string file)
         {
             // Get file extension

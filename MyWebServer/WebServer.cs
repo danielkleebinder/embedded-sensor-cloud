@@ -7,7 +7,10 @@ using System.IO;
 
 namespace MyWebServer
 {
-    class WebServer
+    /// <summary>
+    /// A plugin based web server implementation.
+    /// </summary>
+    public class WebServer
     {
         private TcpListener serverSocket;
         private bool running = false;
@@ -46,8 +49,9 @@ namespace MyWebServer
         }
 
         /// <summary>
-        /// Handles the HTTP request.
+        /// Handles the HTTP request using the given socket.
         /// </summary>
+        /// <param name="clientSocket">Client socket.</param>
         private void HandleHTTPRequest(object clientSocket)
         {
             // Get request from client
@@ -94,6 +98,10 @@ namespace MyWebServer
             socket.Close();
         }
 
+        /// <summary>
+        /// Sends a "400 Bad Request" to the given stream.
+        /// </summary>
+        /// <param name="s">Stream.</param>
         private void SendBadRequest(Stream s)
         {
             Response err = new Response();
@@ -102,12 +110,12 @@ namespace MyWebServer
         }
 
         /// <summary>
-        /// Sets and returns the local server address.
+        /// Sets and returns the local server address. The standard value is "localhost".
         /// </summary>
         public IPAddress Address { get; set; } = IPAddress.Loopback;
 
         /// <summary>
-        /// Sets and returns the local server port.
+        /// Sets and returns the local server port. The standard value is 80.
         /// </summary>
         public int Port { get; set; } = 80;
 

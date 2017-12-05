@@ -3,12 +3,23 @@ using System.Collections.Generic;
 
 namespace MyWebServer
 {
-    class Settings
+    /// <summary>
+    /// A helper class which contains useful settings and properties for the server.
+    /// </summary>
+    public class Settings
     {
-
+        /// <summary>
+        /// Contains all HTTP status codes.
+        /// </summary>
         public static readonly IDictionary<Int32, string> STATUS_CODES = new Dictionary<Int32, string>();
+        /// <summary>
+        /// Contains all supported HTTP methods.
+        /// </summary>
         public static readonly IList<string> HTTP_METHODS = new List<string>();
 
+        /// <summary>
+        /// Initializes the settings.
+        /// </summary>
         static Settings()
         {
             STATUS_CODES.Add(100, "Continue");

@@ -8,13 +8,19 @@ using System.Threading;
 
 namespace MyWebServer.Plugins
 {
+    /// <summary>
+    /// A plugin which handles sensor data using the database.
+    /// </summary>
     class TemperaturePlugin : IPlugin
     {
         private DatabaseAccess access;
 
+        /// <summary>
+        /// Creates a new temperature plugin.
+        /// </summary>
         public TemperaturePlugin()
         {
-            //access = new SQLServerDatabaseAccess();
+            // access = new SQLServerDatabaseAccess();
             access = new VirtualDatabaseAccess();
             access.Initialize();
 
@@ -24,12 +30,17 @@ namespace MyWebServer.Plugins
             ThreadPool.QueueUserWorkItem(ReadSensor);
         }
 
+        /// <summary>
+        /// Reads from the a "virtual" sensor every 10 seconds and copies the
+        /// data into the database.
+        /// </summary>
+        /// <param name="obj">Threading object parameter.</param>
         private void ReadSensor(object obj)
         {
             Random rnd = new Random();
             while (true)
             {
-                // Add a new temperature entry ever 10 seconds
+                // Add a new temperature entry every 10 seconds
                 if (access != null)
                 {
                     access.SaveTemperature(new Temperature(DateTime.Now, (rnd.NextDouble() - 0.5) * 60.0));
@@ -38,6 +49,12 @@ namespace MyWebServer.Plugins
             }
         }
 
+        /// <summary>
+        /// Returns a score between 0 and 1 to indicate that the plugin is willing to handle
+        /// the request. The plugin with the highest score will execute the request.
+        /// </summary>
+        /// <param name="req">Request.</param>
+        /// <returns>A score between 0 and 1.</returns>
         public Single CanHandle(IRequest req)
         {
             if (req == null || req.Url == null || req.Url.Segments.Length < 1)
@@ -51,6 +68,11 @@ namespace MyWebServer.Plugins
             return 0.0f;
         }
 
+        /// <summary>
+        /// Called by the server when the plugin should handle the request.
+        /// </summary>
+        /// <param name="req">Request.</param>
+        /// <returns>A new response object.</returns>
         public IResponse Handle(IRequest req)
         {
             bool restXML = false;
@@ -90,7 +112,7 @@ namespace MyWebServer.Plugins
             }
 
             // Load temperature data from database and build response
-            List<Temperature> data = access.LoadAllTemperaturesSection(from, until);
+            List<Temperature> data = access.LoadAllTemperaturesRange(from, until);
             if (restXML)
             {
                 return CreateRestXML(result, req, data);
@@ -98,6 +120,13 @@ namespace MyWebServer.Plugins
             return CreateHTML(result, req, data);
         }
 
+        /// <summary>
+        /// Creates a new rest response using the XML API.
+        /// </summary>
+        /// <param name="result">Response.</param>
+        /// <param name="req">Request.</param>
+        /// <param name="data">Data set of temperatures.</param>
+        /// <returns>Finished response.</returns>
         private IResponse CreateRestXML(IResponse result, IRequest req, List<Temperature> data)
         {
             // 200 Success Code
@@ -135,6 +164,13 @@ namespace MyWebServer.Plugins
             return result;
         }
 
+        /// <summary>
+        /// Creates and builds the HTML response.
+        /// </summary>
+        /// <param name="result">Response.</param>
+        /// <param name="req">Request.</param>
+        /// <param name="data">Data set of temperatures.</param>
+        /// <returns>Finished response.</returns>
         private IResponse CreateHTML(IResponse result, IRequest req, List<Temperature> data)
         {
             // 200 Success Code
@@ -165,12 +201,16 @@ namespace MyWebServer.Plugins
             return result;
         }
 
+        /// <summary>
+        /// Writes around 10.000 test data sets to the database.
+        /// </summary>
         private void LoadTestDataSets()
         {
             Random rnd = new Random();
             DateTime tenYearsAgo = DateTime.Now.AddYears(-10);
             for (int i = 0; i < 365 * 10 * 3; i++)
             {
+                // Create random temperature
                 Temperature tmp = new Temperature();
                 tmp.Date = tenYearsAgo
                     .AddDays(i / 3)

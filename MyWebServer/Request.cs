@@ -7,8 +7,16 @@ using BIF.SWE1.Interfaces;
 
 namespace MyWebServer
 {
-    class Request : IRequest
+    /// <summary>
+    /// The request class is used to parse HTTP requests.
+    /// </summary>
+    public class Request : IRequest
     {
+        /// <summary>
+        /// Creates a new instance of "Request" using the specified network stream to
+        /// retreive request data from the clients.
+        /// </summary>
+        /// <param name="network">Network stream.</param>
         public Request(Stream network)
         {
             // Open a stream reader to the given network
@@ -96,11 +104,17 @@ namespace MyWebServer
             }
         }
 
+        /// <summary>
+        /// Contains the request data body as byte array.
+        /// </summary>
         public Byte[] ContentBytes
         {
             get; private set;
         }
 
+        /// <summary>
+        /// Contains the data body length in bytes.
+        /// </summary>
         public Int32 ContentLength
         {
             get
@@ -113,16 +127,26 @@ namespace MyWebServer
             }
         }
 
+        /// <summary>
+        /// Contains the data body as stream.
+        /// </summary>
         public Stream ContentStream
         {
             get; private set;
         }
 
+        /// <summary>
+        /// Contains the data body as simple string. This representation of the data can cause problems
+        /// when receiving images for example.
+        /// </summary>
         public String ContentString
         {
             get; private set;
         }
 
+        /// <summary>
+        /// Contains the HTTP content type (e.g.: "text/html").
+        /// </summary>
         public String ContentType
         {
             get
@@ -135,31 +159,49 @@ namespace MyWebServer
             }
         }
 
+        /// <summary>
+        /// Contains the exact number of headers from the request.
+        /// </summary>
         public Int32 HeaderCount
         {
             get { return Headers.Count; }
         }
 
+        /// <summary>
+        /// Contains all headers from the request and their corresponding values.
+        /// </summary>
         public IDictionary<String, String> Headers
         {
             get; private set;
         }
 
+        /// <summary>
+        /// Checks if the request is a valid request or not.
+        /// </summary>
         public Boolean IsValid
         {
             get; private set;
         }
 
+        /// <summary>
+        /// Contains the HTTP method used by the request.
+        /// </summary>
         public String Method
         {
             get; private set;
         }
 
+        /// <summary>
+        /// Contains the request URL as Url object.
+        /// </summary>
         public IUrl Url
         {
             get; private set;
         }
 
+        /// <summary>
+        /// Contains the used user agent (in other words: the browser (client) used by the user).
+        /// </summary>
         public String UserAgent
         {
             get

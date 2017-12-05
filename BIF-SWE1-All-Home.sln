@@ -13,6 +13,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BIF-SWE1.Interfaces", "..\UnitTests\unit-tests\BIF-SWE1\CS\BIF-SWE1.Interfaces\BIF-SWE1.Interfaces.csproj", "{27C44945-CB10-48BF-AD69-457D496B32A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWebServerTests", "MyWebServerTests\MyWebServerTests.csproj", "{2D49083A-A647-4232-84F2-8AA558077818}"
+	ProjectSection(ProjectDependencies) = postProject
+		{27C44945-CB10-48BF-AD69-457D496B32A2} = {27C44945-CB10-48BF-AD69-457D496B32A2}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

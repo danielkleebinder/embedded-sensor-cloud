@@ -1,9 +1,19 @@
 ﻿using System.Net;
 
+/// <summary>
+/// Web server namespace.
+/// </summary>
 namespace MyWebServer
 {
+    /// <summary>
+    /// Main program entry point.
+    /// </summary>
     class Program
     {
+        /// <summary>
+        /// Main method as strating point.
+        /// </summary>
+        /// <param name="args">Program arguments.</param>
         static void Main(string[] args)
         {
             WebServer server = new WebServer();

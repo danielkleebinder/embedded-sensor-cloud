@@ -1,13 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BIF.SWE1.Interfaces;
 
 namespace MyWebServer.Plugins
 {
-    class LowerPlugin : IPlugin
+    /// <summary>
+    /// A plugin which lowers text.
+    /// </summary>
+    public class LowerPlugin : IPlugin
     {
+        /// <summary>
+        /// Checks if the given request can be handled by this plugin.
+        /// </summary>
+        /// <param name="req">Request.</param>
+        /// <returns>Float value between 0.0 and 1.0.</returns>
         public Single CanHandle(IRequest req)
         {
             string body = req.ContentString;
@@ -18,6 +23,12 @@ namespace MyWebServer.Plugins
             return 0.0f;
         }
 
+        /// <summary>
+        /// Handles the response by create a HTTP response with the text from the request
+        /// in lower case.
+        /// </summary>
+        /// <param name="req">Request.</param>
+        /// <returns>Reponse with lower case text as content.</returns>
         public IResponse Handle(IRequest req)
         {
             string body = req.ContentString;

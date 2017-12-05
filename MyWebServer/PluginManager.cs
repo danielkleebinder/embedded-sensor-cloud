@@ -6,9 +6,16 @@ using System.IO;
 
 namespace MyWebServer
 {
-    class PluginManager : IPluginManager
+    /// <summary>
+    /// The plugin manager implementation handles the loading and distribution of all
+    /// plugins used by the web server. It can also load plugins dynamically from a
+    /// given directory.
+    /// </summary>
+    public class PluginManager : IPluginManager
     {
-
+        /// <summary>
+        /// Creates a new instance of "PluginManager" and loads all plugins.
+        /// </summary>
         public PluginManager()
         {
             Add(new Plugins.TestPlugin());
@@ -21,6 +28,9 @@ namespace MyWebServer
             LoadDynamicPlugins();
         }
 
+        /// <summary>
+        /// Loads plugins dynamically from a given directory by using the reflection API.
+        /// </summary>
         private void LoadDynamicPlugins()
         {
             // Check if the plugin directory does even exist
@@ -55,8 +65,15 @@ namespace MyWebServer
             }
         }
 
+        /// <summary>
+        /// Returns an enumerable which contains all plugins.
+        /// </summary>
         public IEnumerable<IPlugin> Plugins { get; } = new List<IPlugin>();
 
+        /// <summary>
+        /// Adds a new plugin to the plugin manager using dynamic loading via the reflection API.
+        /// </summary>
+        /// <param name="plugin">Plugin name.</param>
         public void Add(String plugin)
         {
             // Parse plugin string
@@ -73,11 +90,18 @@ namespace MyWebServer
             Add(result);
         }
 
+        /// <summary>
+        /// Adds the given plugin to the plugin manager.
+        /// </summary>
+        /// <param name="plugin">Plugin.</param>
         public void Add(IPlugin plugin)
         {
             ((List<IPlugin>) Plugins).Add(plugin);
         }
 
+        /// <summary>
+        /// Removes all plugins from the plugin manager.
+        /// </summary>
         public void Clear()
         {
             ((List<IPlugin>) Plugins).Clear();
